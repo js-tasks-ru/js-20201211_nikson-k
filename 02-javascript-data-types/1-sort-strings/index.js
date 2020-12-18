@@ -5,9 +5,8 @@
  * @returns {string[]}
  */
 export function sortStrings(arr, param = 'asc') {
-  let arrCpy = [...arr];
+  const arrCpy = [...arr];
   const mode = param.toLowerCase() === 'asc' ? 1 : -1;
-  let sortedArray = arrCpy.sort((a, b) => a.localeCompare(b, 'ru-en', { caseFirst: 'upper', localeMatcher: 'best fit' }) * mode);
 
-  return sortedArray
+  return arrCpy.sort((a, b) => a.localeCompare(b, 'ru-en', { caseFirst: 'upper', localeMatcher: 'best fit' }) * mode);
 }
