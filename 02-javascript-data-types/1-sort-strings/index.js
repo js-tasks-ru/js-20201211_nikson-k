@@ -6,11 +6,8 @@
  */
 export function sortStrings(arr, param = 'asc') {
   let arrCpy = [...arr];
-  let sortedArray = arrCpy.sort((a, b) => a.localeCompare(b, 'ru-en', { caseFirst: 'upper' , localeMatcher: 'best fit'}));
-  if (param === 'asc') {
-    return sortedArray;
-  }
-  else {
-    return sortedArray.reverse();
-  }
+  const mode = param.toLowerCase() === 'asc' ? 1 : -1;
+  let sortedArray = arrCpy.sort((a, b) => a.localeCompare(b, 'ru-en', { caseFirst: 'upper', localeMatcher: 'best fit' }) * mode);
+
+  return sortedArray
 }
