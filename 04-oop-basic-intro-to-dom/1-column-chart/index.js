@@ -1,4 +1,5 @@
 export default class ColumnChart {
+  subElements = {};
   constructor({ data = [], label = '', value = 0, link = '' } = {}) {
     this.data = data;
     this.label = label;
@@ -12,11 +13,7 @@ export default class ColumnChart {
   render() {
     this.element = document.createElement('div');
     const link = `<a href="${this.link}" class="column-chart__link">View all</a>`;
-
-    let chartContainerClassName = 'column-chart';
-    if ((!this.data || this.data.length == 0)) {
-      chartContainerClassName = 'column-chart_loading';
-    }
+    const chartContainerClassName = this.data.length ? 'column-chart' : 'column-chart_loading';
 
     this.element.innerHTML = `<div class="${chartContainerClassName}" style="--chart-height: ${this.chartHeight}">
           <div class="column-chart__title">${this.title}
@@ -33,6 +30,8 @@ export default class ColumnChart {
         </div>`;
 
     this.element = this.element.firstChild;
+
+    this.subElements = this.element.querySelector('div[data-element="body"]');
   }
 
   update(data) {
@@ -41,8 +40,7 @@ export default class ColumnChart {
     }
 
     this.data = data;
-    let bodyElement = this.element.querySelector('div[data-element="body"]');
-    bodyElement.innerHTML = this.composeBars();
+    this.subElements.innerHTML = this.composeBars();
   }
 
   destroy() {
@@ -51,14 +49,14 @@ export default class ColumnChart {
 
   remove() {
     if (this.element.parentNode) {
-      this.element.parentNode.removeChild(this.element);
+      this.element.remove();
     }
   }
 
   composeBars() {
     return this.getColumnProps(this.data)
       .map(cp => `<div style="--value: ${cp.value}" data-tooltip="${cp.percent}"></div>`)
-      .join('\n\t');
+      .join('');
   }
 
   getColumnProps(data) {
