@@ -1,8 +1,5 @@
 export default class SortableTable {
-  tableBody = {};
-  tableHeader = {};
-  defaultSortBy = 'title';
-  defaultOrder = 'asc';
+  subElements = {};
   constructor(header, data) {
     this.data = [...data.data];
     this.header = header;
@@ -10,17 +7,19 @@ export default class SortableTable {
   }
 
   render() {
-    this.element = document.createElement('div');
-    this.element.innerHTML = this.composeElement();
-    this.element = this.element.firstChild;
+    const dummy = document.createElement('div');
+    dummy.innerHTML = this.composeElement();
+    this.element = dummy.firstChild;
+
     this.tableBody = this.element.querySelector("[ data-element=body]");
     this.tableHeader = this.element.querySelector("[data-element=header]");
+    this.subElements = this.getSubElements(this.element);
   }
 
   sort(fieldValue, orderValue) {
     const sortedData = this.sortData(fieldValue, orderValue);
-    this.tableBody.innerHTML = this.composeTableBody(sortedData);
-    this.tableHeader.innerHTML = this.composeHeader(fieldValue,orderValue);
+    this.subElements.body.innerHTML = this.composeTableBody(sortedData);
+    this.subElements.header.innerHTML = this.composeHeader(fieldValue, orderValue);
   }
   sortData(fieldValue, orderValue) {
     const contents = [...this.data];
@@ -30,13 +29,18 @@ export default class SortableTable {
 
     return contents.sort((a, b) => {
       switch (sortType) {
-        case 'string': return a[fieldValue].localeCompare(b[fieldValue], 'ru-en', { caseFirst: 'upper', localeMatcher: 'best fit' }) * direction;
+        case 'string': return a[fieldValue].localeCompare(b[fieldValue], 'ru-en', { localeMatcher: 'best fit' }) * direction;
         case 'number': return (a[fieldValue] - b[fieldValue]) * direction;
         default: return (a[fieldValue] - b[fieldValue]) * direction;
       }
     });
   }
   destroy() {
+    this.remove();
+    this.subElements = {};
+  }
+
+  remove() {
     this.element.remove();
   }
 
@@ -56,10 +60,11 @@ export default class SortableTable {
     return template;
   }
 
-  composeHeader(sortBy = this.defaultSortBy, order = this.defaultOrder) {
+  composeHeader(sortBy, order) {
+    const orderAttr = !order ? '' : `data-order="${order}"`;
     const headerHtml = this.header
       .map(cell =>
-        `<div class="sortable-table__cell" data-id="${cell.id}" data-sortable="${cell.sortable}" data-order="${order}">
+        `<div class="sortable-table__cell" data-id="${cell.id}" data-sortable="${cell.sortable}" ${orderAttr}>
           <span>${cell.title}</span>
           ${cell.sortable && cell.id === sortBy ? this.composeSortingArrow(order) : ''}
          </div>`)
@@ -98,6 +103,16 @@ export default class SortableTable {
         }
       })
       .join('');
+  }
+
+  getSubElements(element) {
+    const elements = element.querySelectorAll('[data-element]');
+
+    return [...elements].reduce((accum, subElement) => {
+      accum[subElement.dataset.element] = subElement;
+
+      return accum;
+    }, {});
   }
 }
 
