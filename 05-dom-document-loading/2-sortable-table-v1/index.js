@@ -29,7 +29,8 @@ export default class SortableTable {
 
     return contents.sort((a, b) => {
       switch (sortType) {
-        case 'string': return a[fieldValue].localeCompare(b[fieldValue], 'ru-en', { localeMatcher: 'best fit' }) * direction;
+        //case 'string': return a[fieldValue].localeCompare(b[fieldValue], 'ru-en', { localeMatcher: 'best fit' }) * direction;
+        case 'string': return direction * a[fieldValue].localeCompare(b[fieldValue], 'ru');
         case 'number': return (a[fieldValue] - b[fieldValue]) * direction;
         default: return (a[fieldValue] - b[fieldValue]) * direction;
       }
