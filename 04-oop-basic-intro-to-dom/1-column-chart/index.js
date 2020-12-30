@@ -1,98 +1,74 @@
 export default class ColumnChart {
-  /** @type {HTMLElement} */
-  element;
   subElements = {};
-  chartHeight = 50;
-  /** Column Chart
-  * @param data {Number[]} - data to be presented
-  * @param label {string} - chart label
-  * @param link {string} - link to more info
-  * @param value {number} - chart value
-  */
-  constructor({
-    data = [],
-    label = '',
-    link = '',
-    value = 0
-  } = {}) {
+  constructor({ data = [], label = '', value = 0, link = '' } = {}) {
     this.data = data;
     this.label = label;
-    this.link = link;
+    this.title = `Total ${this.label}`;
     this.value = value;
-
+    this.link = link;
+    this.chartHeight = 50;
     this.render();
   }
 
-  getColumnBody(data) {
-    const maxValue = Math.max(...data);
-
-    return data
-      .map(item => {
-        const scale = this.chartHeight / maxValue;
-        const percent = (item / maxValue * 100).toFixed(0);
-
-        return `<div style="--value: ${Math.floor(item * scale)}" data-tooltip="${percent}%"></div>`;
-      })
-      .join('');
-  }
-
-  getLink() {
-    return this.link ? `<a class="column-chart__link" href="${this.link}">View all</a>` : '';
-  }
-
-  get template() {
-    return `
-      <div class="column-chart column-chart_loading" style="--chart-height: ${this.chartHeight}">
-        <div class="column-chart__title">
-          Total ${this.label}
-          ${this.getLink()}
-        </div>
-        <div class="column-chart__container">
-          <div data-element="header" class="column-chart__header">
-            ${this.value}
-          </div>
-          <div data-element="body" class="column-chart__chart">
-            ${this.getColumnBody(this.data)}
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   render() {
-    const element = document.createElement('div');
+    this.element = document.createElement('div');
+    const link = `<a href="${this.link}" class="column-chart__link">View all</a>`;
+    const chartContainerClassName = this.data.length ? 'column-chart' : 'column-chart_loading';
 
-    element.innerHTML = this.template;
+    this.element.innerHTML = `<div class="${chartContainerClassName}" style="--chart-height: ${this.chartHeight}">
+          <div class="column-chart__title">${this.title}
+            ${this.link ? link : ''}
+          </div>
+          <div class="column-chart__container">
+            <div data-element="header" class="column-chart__header">
+              ${this.value}
+            </div>
+            <div data-element="body" class="column-chart__chart">
+              ${this.composeBars()}
+            </div>
+          </div>
+        </div>`;
 
-    this.element = element.firstElementChild;
+    this.element = this.element.firstChild;
 
-    if (this.data.length) {
-      this.element.classList.remove('column-chart_loading');
+    this.subElements = this.element.querySelector('div[data-element="body"]');
+  }
+
+  update(data) {
+    if (!data) {
+      return;
     }
 
-    this.subElements = this.getSubElements(this.element);
-  }
-
-  getSubElements(element) {
-    const elements = element.querySelectorAll('[data-element]');
-
-    return [...elements].reduce((accum, subElement) => {
-      accum[subElement.dataset.element] = subElement;
-
-      return accum;
-    }, {});
-  }
-
-  update(bodyData) {
-    this.subElements.body.innerHTML = this.getColumnBody(bodyData);
-  }
-
-  remove () {
-    this.element.remove();
+    this.data = data;
+    this.subElements.innerHTML = this.composeBars();
   }
 
   destroy() {
     this.remove();
-    this.subElements = {};
+  }
+
+  remove() {
+    if (this.element.parentNode) {
+      this.element.remove();
+    }
+  }
+
+  composeBars() {
+    return this.getColumnProps(this.data)
+      .map(cp => `<div style="--value: ${cp.value}" data-tooltip="${cp.percent}"></div>`)
+      .join('');
+  }
+
+  getColumnProps(data) {
+    const maxValue = Math.max(...data);
+    const scale = 50 / maxValue;
+
+    return data.map(item => {
+      return {
+        percent: (item / maxValue * 100).toFixed(0) + '%',
+        value: String(Math.floor(item * scale))
+      };
+    });
   }
 }
+
