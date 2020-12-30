@@ -1,11 +1,10 @@
 import { NotificationType } from './codesets.js';
 
-let instance = null;
 export default class NotificationMessage {
-  element={};
+  static activeElement;
   constructor(message = '', { duration = 1, type = NotificationType.success } = {}) {
-    if (!instance) {
-      instance = this;
+    if (NotificationMessage.activeElement) {
+      NotificationMessage.activeElement.remove();
     }
     this.message = message;
     this.duration = duration;
@@ -26,13 +25,11 @@ export default class NotificationMessage {
                     </div>`;
 
     this.element = this.element.firstChild;
+
+    NotificationMessage.activeElement = this.element;
   }
 
   show(targetElement) {
-    if (instance.isMessageShowing){
-      return;
-    }
-    this.isMessageShowing = true;
     if (targetElement) {
       targetElement.appendChild(this.element);
     } else {
@@ -49,7 +46,7 @@ export default class NotificationMessage {
   remove() {
     if (this.element) {
       this.element.remove();
-      instance = null;
+      NotificationMessage.activeElement = null;
     }
   }
 }
