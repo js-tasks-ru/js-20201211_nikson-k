@@ -30,8 +30,8 @@ class Tooltip {
     const tooltipRect = this.element.getBoundingClientRect();
     const pointerX = event.pageX;
     const pointerY = event.pageY;
-    const tooltipRightX = pointerX + offset + (tooltipRect.width ? tooltipRect.width : 0);
-    const tooltipBottomY = pointerY + offset + (tooltipRect.height ? tooltipRect.height : 0);
+    const tooltipRightX = pointerX + offset + (tooltipRect ?  tooltipRect.width : 0);
+    const tooltipBottomY = pointerY + offset + (tooltipRect ? tooltipRect.height : 0);
 
     if (tooltipRightX > window.outerWidth && tooltipBottomY > window.outerHeight) {
       this.element.style.left = `${event.clientX - tooltipRect.width}px`;
