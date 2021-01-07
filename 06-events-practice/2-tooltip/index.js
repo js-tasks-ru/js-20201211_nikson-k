@@ -27,26 +27,26 @@ class Tooltip {
       return;
     }
 
-    const tooltipRect = this.element.getBoundingClientRect();
-    const pointerX = event.pageX;
-    const pointerY = event.pageY;
-    const tooltipRightX = pointerX + offset + (tooltipRect ?  tooltipRect.width : 0);
-    const tooltipBottomY = pointerY + offset + (tooltipRect ? tooltipRect.height : 0);
+  //   const tooltipRect = this.element.getBoundingClientRect();
+  //   const pointerX = event.pageX;
+  //   const pointerY = event.pageY;
+  //   const tooltipRightX = pointerX + offset + (tooltipRect ?  tooltipRect.width : 0);
+  //   const tooltipBottomY = pointerY + offset + (tooltipRect ? tooltipRect.height : 0);
 
-    if (tooltipRightX > window.outerWidth && tooltipBottomY > window.outerHeight) {
-      this.element.style.left = `${event.clientX - tooltipRect.width}px`;
-      this.element.style.top = `${event.clientX - tooltipRect.height}px`;
-    } else if (tooltipRightX > window.outerWidth) {
-      this.element.style.left = `${event.clientX - tooltipRect.width}px`;
+  //   if (tooltipRightX > window.outerWidth && tooltipBottomY > window.outerHeight) {
+  //     this.element.style.left = `${event.clientX - tooltipRect.width}px`;
+  //     this.element.style.top = `${event.clientX - tooltipRect.height}px`;
+  //   } else if (tooltipRightX > window.outerWidth) {
+  //     this.element.style.left = `${event.clientX - tooltipRect.width}px`;
+  //     this.element.style.top = `${event.clientY + offset}px`;
+  //   } else if (tooltipBottomY > window.outerHeight) {
+  //     this.element.style.left = `${event.clientX + offset}px`;
+  //     this.element.style.top = 'auto';
+  //     this.element.style.bottom = '100%';
+  //   } else {
       this.element.style.top = `${event.clientY + offset}px`;
-    } else if (tooltipBottomY > window.outerHeight) {
       this.element.style.left = `${event.clientX + offset}px`;
-      this.element.style.top = 'auto';
-      this.element.style.bottom = '100%';
-    } else {
-      this.element.style.top = `${event.clientY + offset}px`;
-      this.element.style.left = `${event.clientX + offset}px`;
-    }
+  //   }
   }
 
   constructor() {
