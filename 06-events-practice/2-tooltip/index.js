@@ -22,6 +22,11 @@ class Tooltip {
 
   moveElement(event) {
     const offset = 20;
+
+    if (!this.element) {
+      return;
+    }
+
     const tooltipRect = this.element.getBoundingClientRect();
     const pointerX = event.pageX;
     const pointerY = event.pageY;
@@ -63,7 +68,7 @@ class Tooltip {
 
     document.body.append(this.element);
   }
-S
+  S
   destroy() {
     document.removeEventListener('pointerover', this.onMouseMove);
     document.removeEventListener('pointerout', this.onPointerOut);
