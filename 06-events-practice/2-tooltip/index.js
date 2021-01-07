@@ -13,7 +13,7 @@ class Tooltip {
   }
 
   onPointerOut = (event) => {
-    this.element.remove();
+    this.remove();
   }
 
   onPointerMove = (event) => {

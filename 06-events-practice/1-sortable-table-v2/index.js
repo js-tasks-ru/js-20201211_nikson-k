@@ -38,7 +38,7 @@ export default class SortableTable {
   }
 
   initListeners() {
-    this.subElements.header.addEventListener('click', this.onColumnHeaderClick);
+    this.subElements.header.addEventListener('pointerdown', this.onColumnHeaderClick);
   }
 
   sort(fieldValue, orderValue) {
@@ -88,6 +88,10 @@ export default class SortableTable {
   }
 
   composeHeader(sortBy, order) {
+    if (!sortBy) {
+      sortBy = 'title';
+      order = 'asc';
+    }
     const orderAttr = !order ? '' : `data-order="${order}"`;
     const headerHtml = this.header
       .map(cell =>
@@ -101,9 +105,11 @@ export default class SortableTable {
   }
 
   composeSortingArrow(order) {
-    return `<span data-element="arrow" class="sortable-table__sort-arrow" data-order="${order}">
-              <span class="sort-arrow"></span>
-            </span>`;
+    return order
+      ? `<span data-element="arrow" class="sortable-table__sort-arrow">
+          <span class="sort-arrow"></span>
+         </span>`
+      : '';
   }
 
   composeTableBody(tableData) {
