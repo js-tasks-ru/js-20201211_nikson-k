@@ -16,13 +16,13 @@ export default class SortableTable {
     this.sort(sortableCol.dataset.id, sortableCol.dataset.order);
   }
 
-  toggleOrder(order) {
+  toggleOrder(order = "asc") {
     const ordDict = {
       asc: 'desc',
       desc: 'asc',
     };
 
-    return ordDict[!order ? 'asc' : order];
+    return ordDict[order];
   }
 
   render() {
