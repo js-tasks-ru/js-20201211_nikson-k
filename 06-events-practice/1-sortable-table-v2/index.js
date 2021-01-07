@@ -12,7 +12,12 @@ export default class SortableTable {
       return;
     }
 
+    const arrow = sortableCol.querySelector('.sortable-table__sort-arrow');
     sortableCol.dataset.order = this.toggleOrder(sortableCol.dataset.order);
+    if (!arrow) {
+      sortableCol.append(this.subElements.arrow);
+    }
+
     this.sort(sortableCol.dataset.id, sortableCol.dataset.order);
   }
 
@@ -44,7 +49,6 @@ export default class SortableTable {
   sort(fieldValue, orderValue) {
     const sortedData = this.sortData(fieldValue, orderValue);
     this.subElements.body.innerHTML = this.composeTableBody(sortedData);
-    this.subElements.header.innerHTML = this.composeHeader(fieldValue, orderValue);
   }
 
   sortData(fieldValue, order) {
