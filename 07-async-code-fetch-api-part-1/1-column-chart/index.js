@@ -20,14 +20,8 @@ export default class ColumnChart {
     }
     this.data = [];
     this.render();
-    this.requestData(this.range.to, this.range.from).then(res => {
-      this.data = res;
-      debugger
-      if (!this.data || this.data.length === 0) {
-        this.value = 0;
-      }
-
-      this.update(this.range.to, this.range.from);
+    this.update(this.range.from, this.range.to).then(res => {
+      console.log('updated');
     });
   }
 
@@ -38,7 +32,7 @@ export default class ColumnChart {
     const toTs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(),
       now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
     this.range.from = new Date(fromTs).toISOString();
-    this.range.to = new Date(toTs * 1000).toISOString();
+    this.range.to = new Date(toTs).toISOString();
   }
 
   getColumnBody(data) {
@@ -108,6 +102,15 @@ export default class ColumnChart {
     this.subElements.header.innerHTML = this.value;
     this.element.classList.remove('column-chart_loading');
     this.subElements.body.innerHTML = this.getColumnBody(this.data);
+  }
+
+  updateComponent(data) {
+    if (!data) {
+      return;
+    }
+
+    this.data = data;
+    this.subElements.innerHTML = this.getColumnBody(this.data);
   }
 
   async requestData(from, to) {
