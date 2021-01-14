@@ -27,10 +27,10 @@ export default class ColumnChart {
 
   setDefaultRange() {
     const now = new Date;
-    const fromTs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 1,
-      now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
-    const toTs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(),
-      now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    //day before today
+    const fromTs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() - 1, now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
+    //today
+    const toTs = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds(), now.getMilliseconds());
     this.range.from = new Date(fromTs).toISOString();
     this.range.to = new Date(toTs).toISOString();
   }
@@ -114,21 +114,16 @@ export default class ColumnChart {
   }
 
   async requestData(from, to) {
-    let reqUrl = new URL(this.url, this.baseUrl);
+    const reqUrl = new URL(this.url, this.baseUrl);
     const fromDt = new Date(from);
     const toDt = new Date(to);
 
-    let params = new URLSearchParams(`${fromDt ? `from=${fromDt.toISOString()}` : ''}${fromDt ? '&' : ''}${toDt ? `to=${toDt.toISOString()}` : ''}`);
-    params.forEach((v, k) => reqUrl.searchParams.set(k, v));
+    reqUrl.searchParams.set('from',fromDt.toISOString());
+    reqUrl.searchParams.set('to',toDt.toISOString());
 
-    const data = await getChartData(reqUrl.toString(), params);
+    const data = await getChartData(reqUrl.toString());
 
-    let result = []
-    for (const key in data) {
-      result.push(data[key]);
-    }
-
-    return result;
+    return Object.values(data);
   }
 
   remove() {
