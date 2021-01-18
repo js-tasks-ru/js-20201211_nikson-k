@@ -1,10 +1,11 @@
 import fetchJson from './utils/fetch-json.js';
 
+const backendUrl = 'https://course-js.javascript.ru';
+
 export default class SortableTable {
   element;
   subElements = {};
   loading = false;
-  baseUrl = 'https://course-js.javascript.ru';
 
   onSortClick = async event => {
     const column = event.target.closest('[data-sortable="true"]');
@@ -29,7 +30,7 @@ export default class SortableTable {
         column.append(this.subElements.arrow);
       }
       if (this.isServersideSorting) {
-        this.serversideSort(id, nextOrder, 1, 1 + this.step)
+        this.sortOnServer(id, nextOrder, 1, 1 + this.step)
       }
       else {
         this.updateRows(this.sortData(id, nextOrder));
@@ -71,7 +72,7 @@ export default class SortableTable {
     this.data = data;
     this.sorted = sorted;
     this.isServersideSorting = isServersideSorting;
-    this.url = new URL(url, this.baseUrl);
+    this.url = new URL(url, backendUrl);
     this.step = step;
     this.start = start;
     this.end = end;
@@ -226,7 +227,7 @@ export default class SortableTable {
     });
   }
 
-  async serversideSort(id, order, start, end) {
+  async sortOnServer(id, order, start, end) {
     const data = await this.loadData(id, order, start, end);
 
     this.updateRows(data);
