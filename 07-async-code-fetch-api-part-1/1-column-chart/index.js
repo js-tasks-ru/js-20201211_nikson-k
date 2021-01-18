@@ -20,9 +20,7 @@ export default class ColumnChart {
     }
     this.data = [];
     this.render();
-    this.update(this.range.from, this.range.to).then(res => {
-      console.log('updated');
-    });
+    this.update(this.range.from, this.range.to);
   }
 
   setDefaultRange() {
