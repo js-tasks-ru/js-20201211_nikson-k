@@ -239,6 +239,11 @@ export default class ProductForm {
     }
   }
 
+  dispatchEvent (id) {
+    const event = this.productId ? new CustomEvent('product-updated', { detail: id }) : new CustomEvent('product-saved');
+    this.element.dispatchEvent(event);
+  }
+
   getFormData() {
     const { productForm, imageListContainer } = this.subElements;
     const excludedFields = ['images'];
