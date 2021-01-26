@@ -171,17 +171,10 @@ export default class SortableTable {
     this.url.searchParams.set('_end', end);
 
     this.element.classList.add('sortable-table_loading');
-    try {
-      const data = await fetchJson(this.url);
+    const data = await fetchJson(this.url);
+    this.element.classList.remove('sortable-table_loading');
 
-      return data;
-    }
-    catch (error) {
-      console.error(error);
-    }
-    finally {
-      this.element.classList.remove('sortable-table_loading');
-    }
+    return data;
   }
 
   updateRows(data) {
